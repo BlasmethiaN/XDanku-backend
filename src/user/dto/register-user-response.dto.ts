@@ -4,4 +4,4 @@ export enum RegisterError {
   EMAIL_EXISTS = 'EMAIL_EXISTS',
 }
 
-export type RegisterUserResponseDto = { userId: number } | RegisterError
+export type RegisterUserResponseDto = { userId: number } | { error: RegisterError }
