@@ -1,16 +1,19 @@
-import { Controller, Get, Post, Body, Res } from '@nestjs/common'
+import { Controller, Get, Post, Body, Res, Req } from '@nestjs/common'
 import { LoginUserDto } from './dto/login-user.dto'
 import { RegisterUserDto } from './dto/register-user.dto'
 import { UserService } from './user.service'
-import { Response } from 'express'
-import { JwtService } from '@nestjs/jwt'
+import { Request, Response } from 'express'
+import { AuthService } from 'src/auth/auth.service'
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly authService: AuthService
+  ) {}
 
   private setTokenCookie(userId: number, res: Response) {
-    res.cookie('token', `Bearer ${this.jwtService.sign({ userId })}`, { httpOnly: true })
+    res.cookie('token', `Bearer ${this.authService.sign({ userId })}`, { httpOnly: true })
   }
 
   @Post('register')
@@ -35,7 +38,7 @@ export class UserController {
   }
 
   @Get()
-  currentUser() {
-    return this.userService.findAll()
+  currentUser(@Req() req: Request) {
+    return this.userService.findOne(req.userId)
   }
 }

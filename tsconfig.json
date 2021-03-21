@@ -11,6 +11,14 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true
-  }
+    "incremental": true,
+    "typeRoots": [
+      "./typings",
+      "./node_modules/@types"
+    ],
+  },
+  "exclude": [
+    "dist/**/*.d.ts",
+    "node_modules"
+  ]
 }
