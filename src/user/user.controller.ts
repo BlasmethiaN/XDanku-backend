@@ -9,7 +9,7 @@ import { ClassSerializerInterceptor } from '@nestjs/common/serializer/class-seri
 import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator'
 
 // logout - res.clearCookie('token')
-
+@UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UserController {
   constructor(
@@ -43,7 +43,6 @@ export class UserController {
     return response
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   async currentUser(@Req() req: Request) {
     return await this.userService.findOne(req.userId)
@@ -54,7 +53,6 @@ export class UserController {
     return this.contributionService.findByUser(req.userId)
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   async info(@Param('id') userId: number) {
     return await this.userService.info(userId)
