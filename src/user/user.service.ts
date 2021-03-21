@@ -55,6 +55,6 @@ export class UserService {
   }
 
   info(id: number) {
-    return User.query().findById(id).withGraphJoined('contributions')
+    return User.query().findById(id).withGraphFetched('contributions')
   }
 }

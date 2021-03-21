@@ -1,7 +1,6 @@
 import { Model, RelationMappings } from 'objection'
-
+import { Exclude } from 'class-transformer'
 import { Contribution } from 'src/contribution/entities/contribution.entity'
-import _ from 'lodash'
 
 export class User extends Model {
   static get tableName() {
@@ -12,6 +11,8 @@ export class User extends Model {
   username: string
   displayName: string
   email: string
+
+  @Exclude()
   password: string
   contributions: Contribution[]
 
@@ -26,9 +27,5 @@ export class User extends Model {
         },
       },
     }
-  }
-
-  get withoutPassword(): Omit<User, 'password'> {
-    return _.omit(this, 'password')
   }
 }

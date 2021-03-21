@@ -5,6 +5,8 @@ import { UserService } from './user.service'
 import { Request, Response } from 'express'
 import { AuthService } from 'src/auth/auth.service'
 import { ContributionService } from 'src/contribution/contribution.service'
+import { ClassSerializerInterceptor } from '@nestjs/common/serializer/class-serializer.interceptor'
+import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator'
 
 // logout - res.clearCookie('token')
 
@@ -41,9 +43,10 @@ export class UserController {
     return response
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get()
   async currentUser(@Req() req: Request) {
-    return (await this.userService.findOne(req.userId)).withoutPassword
+    return await this.userService.findOne(req.userId)
   }
 
   @Get('contributions')
@@ -51,8 +54,9 @@ export class UserController {
     return this.contributionService.findByUser(req.userId)
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   async info(@Param('id') userId: number) {
-    return this.userService.info(userId)
+    return await this.userService.info(userId)
   }
 }
