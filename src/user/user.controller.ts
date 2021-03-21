@@ -38,7 +38,7 @@ export class UserController {
   }
 
   @Get()
-  currentUser(@Req() req: Request) {
-    return this.userService.findOne(req.userId)
+  async currentUser(@Req() req: Request) {
+    return (await this.userService.findOne(req.userId)).withoutPassword
   }
 }
