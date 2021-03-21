@@ -53,4 +53,8 @@ export class UserService {
   remove(id: number) {
     return `This action removes a #${id} user`
   }
+
+  info(id: number) {
+    return User.query().findById(id).withGraphJoined('contributions')
+  }
 }

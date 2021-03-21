@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string('description', 500).nullable()
     table.string('title', 64).notNullable()
     table.dateTime('added_time').notNullable().defaultTo(knex.fn.now())
-    table.integer('author').references('id').inTable('user').notNullable()
+    table.integer('author_id').references('id').inTable('user').notNullable()
     table.boolean('original').nullable()
   })
 }
