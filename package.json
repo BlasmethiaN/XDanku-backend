@@ -19,11 +19,13 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "db:migrate": "pnpx knex migrate:latest"
+    "db:migrate": "pnpx knex migrate:latest",
+    "db:rollback": "pnpx knex migrate:rollback"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.13",
     "@nestjs/core": "^7.6.13",
+    "@nestjs/jwt": "^7.2.0",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^7.6.13",
     "bcrypt": "^5.0.1",
@@ -31,6 +33,7 @@
     "class-validator": "^0.13.1",
     "helmet": "^4.4.1",
     "knex": "0.21.19",
+    "nestjs-dotenv": "^1.2.1",
     "objection": "^2.2.15",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",

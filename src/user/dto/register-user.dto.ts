@@ -10,6 +10,4 @@ export class RegisterUserDto {
   email: string
   @IsNotEmpty()
   password: string
-  @IsNotEmpty()
-  passwordAgain: string
 }
