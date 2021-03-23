@@ -7,6 +7,7 @@ import { AuthService } from 'src/auth/auth.service'
 import { ContributionService } from 'src/contribution/contribution.service'
 import { ClassSerializerInterceptor } from '@nestjs/common/serializer/class-serializer.interceptor'
 import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator'
+import { LibService } from 'src/common/lib/lib.service'
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
@@ -14,11 +15,17 @@ export class UserController {
   constructor(
     private readonly contributionService: ContributionService,
     private readonly userService: UserService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly libService: LibService
   ) {}
 
   private setTokenCookie(userId: number, res: Response) {
-    res.cookie('token', `Bearer ${this.authService.sign({ userId })}`, { httpOnly: true })
+    res.cookie('token', `Bearer ${this.authService.sign({ userId })}`, {
+      httpOnly: true,
+      secure: this.libService.isProduction(),
+      sameSite: this.libService.isProduction() ? 'none' : undefined,
+      maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
+    })
   }
 
   @Post('register')
@@ -50,6 +57,7 @@ export class UserController {
 
   @Get()
   async currentUser(@Req() req: Request) {
+    if (req.userId == null) return null
     return await this.userService.findOne(req.userId)
   }
 
