@@ -1,5 +1,5 @@
 import { AuthService } from './auth.service'
-import { ConfigService } from 'nestjs-dotenv'
+import { ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { Module } from '@nestjs/common'
 
