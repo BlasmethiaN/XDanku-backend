@@ -19,7 +19,8 @@ async function bootstrap() {
   app.use(helmet())
   app.use(cookieParser())
   app.useGlobalPipes(new ValidationPipe())
-  await app.listen(3000)
+  const port = process.env.PORT ?? 3000
+  await app.listen(port)
 }
 
 void bootstrap()
