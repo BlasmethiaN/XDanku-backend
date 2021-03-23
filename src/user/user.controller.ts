@@ -8,7 +8,6 @@ import { ContributionService } from 'src/contribution/contribution.service'
 import { ClassSerializerInterceptor } from '@nestjs/common/serializer/class-serializer.interceptor'
 import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator'
 
-// logout - res.clearCookie('token')
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('user')
 export class UserController {
@@ -41,6 +40,12 @@ export class UserController {
       this.setTokenCookie(response.data.userId, res)
     }
     return response
+  }
+
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('token')
+    return true
   }
 
   @Get()

@@ -47,7 +47,12 @@ export class UserService {
   }
 
   async findOne(id: number) {
-    return User.query().findById(id)
+    const user = await User.query().findById(id)
+    if (typeof user !== 'undefined') {
+      return user
+    } else {
+      return false
+    }
   }
 
   remove(id: number) {

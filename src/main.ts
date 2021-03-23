@@ -6,8 +6,15 @@ import cookieParser from 'cookie-parser'
 import helmet from 'helmet'
 import { knex } from 'db/knex'
 
+const isProduction = () => process.env.NODE_ENV === 'production'
+
 async function bootstrap() {
   Model.knex(knex)
+
+  if (isProduction()) {
+    await knex.migrate.latest()
+  }
+
   const app = await NestFactory.create(AppModule)
   app.use(helmet())
   app.use(cookieParser())
