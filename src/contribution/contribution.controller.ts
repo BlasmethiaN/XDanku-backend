@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFiles,
+  UploadedFile,
 } from '@nestjs/common'
 import { ContributionService } from './contribution.service'
 import { CreateContributionDto } from './dto/create-contribution.dto'
@@ -15,17 +15,25 @@ import { UpdateContributionDto } from './dto/update-contribution.dto'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { v4 as uuidv4 } from 'uuid'
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface'
 
-export const storage = {
+export const multerConfig: MulterOptions = {
   storage: diskStorage({
     destination: `./uploads/temp/`,
     filename: (req, file, cb) => {
+      console.log(req.query.tempId)
       const fileName: string = uuidv4()
       const fileExt: string = file.originalname
 
-      cb(null, `${fileName}${fileExt}`)
+      cb(null, `${req.query.tempId as string}/${fileName}${fileExt}`)
     },
   }),
+  fileFilter: (req, file, callback) => {
+    if (!/\.(jpg|jpeg|png|gif)$/.test(file.originalname)) {
+      return callback(new Error('Only image files are allowed!'), false)
+    }
+    callback(null, true)
+  },
 }
 
 @Controller('contribution')
@@ -33,9 +41,10 @@ export class ContributionController {
   constructor(private readonly contributionService: ContributionService) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('image', storage))
-  uploadImage(@UploadedFiles() file: Express.Multer.File) {
-    return of({ imagePath: file.path })
+  @UseInterceptors(FileInterceptor('image', multerConfig))
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
+    console.log(file)
+    return { imagePath: file.path }
   }
 
   @Post()
