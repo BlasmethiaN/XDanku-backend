@@ -5,6 +5,10 @@ import { User } from 'src/user/entities/user.entity'
 
 @Injectable()
 export class ContributionService {
+  upload(files: Express.Multer.File) {
+    return
+  }
+
   create(createContributionDto: CreateContributionDto) {
     return 'This action adds a new contribution'
   }
