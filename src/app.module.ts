@@ -7,6 +7,8 @@ import { ConfigModule } from '@nestjs/config'
 import { ContributionModule } from './contribution/contribution.module'
 import { JwtParserMiddleware } from './common/middlewares/jwt-parser.middleware'
 import { UserModule } from './user/user.module'
+import { AuthMiddleware } from './common/middlewares/auth.middleware'
+import { ContributionController } from './contribution/contribution.controller'
 
 @Module({
   imports: [
@@ -22,6 +24,10 @@ import { UserModule } from './user/user.module'
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtParserMiddleware).forRoutes('/')
+    consumer
+      .apply(JwtParserMiddleware)
+      .forRoutes('/')
+      .apply(AuthMiddleware)
+      .forRoutes(ContributionController)
   }
 }

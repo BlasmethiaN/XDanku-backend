@@ -8,6 +8,8 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  UseGuards,
+  Request,
 } from '@nestjs/common'
 import { ContributionService } from './contribution.service'
 import { CreateContributionDto } from './dto/create-contribution.dto'
@@ -16,16 +18,21 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { v4 as uuidv4 } from 'uuid'
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface'
+import * as fs from 'fs'
 
 export const multerConfig: MulterOptions = {
   storage: diskStorage({
     destination: `./uploads/temp/`,
     filename: (req, file, cb) => {
-      console.log(req.query.tempId)
-      const fileName: string = uuidv4()
-      const fileExt: string = file.originalname
-
-      cb(null, `${req.query.tempId as string}/${fileName}${fileExt}`)
+      fs.mkdir(`./uploads/temp/${req.query.tempId as string}`, { recursive: true }, function (err) {
+        if (err) {
+          console.log(err)
+        } else {
+          const fileName: string = uuidv4()
+          const fileExt: string = file.originalname
+          cb(null, `${req.query.tempId as string}/${fileName}${fileExt}`)
+        }
+      })
     },
   }),
   fileFilter: (req, file, callback) => {
@@ -40,10 +47,11 @@ export const multerConfig: MulterOptions = {
 export class ContributionController {
   constructor(private readonly contributionService: ContributionService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post('upload')
   @UseInterceptors(FileInterceptor('image', multerConfig))
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
-    console.log(file)
+  uploadImage(@UploadedFile() file: Express.Multer.File, @Request() req) {
+    // const user: User = req.user.user
     return { imagePath: file.path }
   }
 
@@ -73,5 +81,8 @@ export class ContributionController {
   }
 }
 function of(arg0: { imagePath: string }) {
+  throw new Error('Function not implemented.')
+}
+function JwtAuthGuard(JwtAuthGuard: any) {
   throw new Error('Function not implemented.')
 }
