@@ -1,12 +1,10 @@
 import { AuthService } from './auth.service'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
-import { forwardRef, Module } from '@nestjs/common'
-import { UserModule } from 'src/user/user.module'
+import { Module } from '@nestjs/common'
 
 @Module({
   imports: [
-    forwardRef(() => UserModule),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {

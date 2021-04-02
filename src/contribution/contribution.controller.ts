@@ -8,8 +8,6 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
-  UseGuards,
-  Request,
 } from '@nestjs/common'
 import { ContributionService } from './contribution.service'
 import { CreateContributionDto } from './dto/create-contribution.dto'
@@ -47,10 +45,9 @@ export const multerConfig: MulterOptions = {
 export class ContributionController {
   constructor(private readonly contributionService: ContributionService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Post('upload')
   @UseInterceptors(FileInterceptor('image', multerConfig))
-  uploadImage(@UploadedFile() file: Express.Multer.File, @Request() req) {
+  uploadImage(@UploadedFile() file: Express.Multer.File) {
     // const user: User = req.user.user
     return { imagePath: file.path }
   }
