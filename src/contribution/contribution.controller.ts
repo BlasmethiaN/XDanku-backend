@@ -31,6 +31,11 @@ export class ContributionController {
     return (await this.contributionService.createDraft(req.userId)).id
   }
 
+  @Delete('draft/:id')
+  deleteDraft(@Param('id') id: string, @Req() req: Request) {
+    return this.contributionService.deleteDraft(id, req.userId)
+  }
+
   @Post()
   create(@Body() createContributionDto: CreateContributionDto) {
     return this.contributionService.create(createContributionDto)

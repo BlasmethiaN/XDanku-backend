@@ -16,6 +16,10 @@
       "./node_modules/@types"
     ],
   },
+  "include": [
+    "src",
+    "typings"
+  ],
   "exclude": [
     "dist/**/*.d.ts",
     "node_modules",

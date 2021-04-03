@@ -15,7 +15,7 @@ const multerConfig = async (contributionService: ContributionService): Promise<M
       await fs.mkdirp(`./uploads/temp/${draftId}`)
       const fileExt: string = _.last(file.originalname.split('.'))
       const fileName: string = await contributionService.createImage(draftId, req.userId, fileExt)
-      cb(null, `${draftId}/${fileName}${fileExt}`)
+      cb(null, `${draftId}/${fileName}.${fileExt}`)
     },
   }),
   fileFilter: (req, file, callback) => {
