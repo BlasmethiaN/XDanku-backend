@@ -17,15 +17,20 @@ export class ContributionService {
     return await Draft.query().insert({ author_id: userId })
   }
 
-  // double check debug
   deleteImageFromFs(image: Image, draftId: string) {
-    return fs.rm(`uploads/${draftId}/${image.id}.${image.ext}`)
+    return fs.rm(`./uploads/temp/${draftId}/${image.id}.${image.ext}`)
+  }
+
+  deleteImageFromDb(image: Image) {
+    return Image.query().deleteById(image.id)
   }
 
   async deleteDraft(draftId: string, userId: number) {
     const draft = await this.findDraft(draftId, userId).withGraphFetched('images')
     if (!draft) throw new Error('Draft does not exist')
     _.forEach(draft.images, async (image) => await this.deleteImageFromFs(image, draftId))
+    _.forEach(draft.images, async (image) => this.deleteImageFromDb(image))
+    await fs.remove(`./uploads/temp/${draftId}`)
     const affected = await Draft.query().deleteById(draftId)
     return affected > 0
   }
