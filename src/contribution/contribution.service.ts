@@ -4,7 +4,6 @@ import { Image } from './entities/image.entity'
 import { Injectable } from '@nestjs/common'
 import { UpdateContributionDto } from './dto/update-contribution.dto'
 import { User } from 'src/user/entities/user.entity'
-import _ from 'lodash'
 import fs from 'fs-extra'
 
 @Injectable()
@@ -17,20 +16,16 @@ export class ContributionService {
     return await Draft.query().insert({ author_id: userId })
   }
 
-  deleteImageFromFs(image: Image, draftId: string) {
-    return fs.rm(`./uploads/temp/${draftId}/${image.id}.${image.ext}`)
-  }
-
-  deleteImageFromDb(image: Image) {
-    return Image.query().deleteById(image.id)
-  }
-
   async deleteDraft(draftId: string, userId: number) {
     const draft = await this.findDraft(draftId, userId).withGraphFetched('images')
     if (!draft) throw new Error('Draft does not exist')
-    _.forEach(draft.images, async (image) => await this.deleteImageFromFs(image, draftId))
-    _.forEach(draft.images, async (image) => this.deleteImageFromDb(image))
     await fs.remove(`./uploads/temp/${draftId}`)
+    await Image.query()
+      .delete()
+      .whereIn(
+        'id',
+        Image.query().select('image.id').joinRelated('draft').where('draft.id', draftId)
+      )
     const affected = await Draft.query().deleteById(draftId)
     return affected > 0
   }
