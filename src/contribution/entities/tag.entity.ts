@@ -1,15 +1,15 @@
 import { Model, RelationMappings } from 'objection'
 
-export class Contribution extends Model {
+import { Contribution } from './contribution.entity'
+
+export class Tag extends Model {
   static get tableName() {
-    return 'contribution'
+    return 'tag'
   }
+
   id: number
-  description: string
-  title: string
-  added_time: string
-  author: number
-  original: boolean
+  tag_name: string
+  contribution: Contribution
 
   static get relationMappings(): RelationMappings {
     return {
@@ -17,12 +17,12 @@ export class Contribution extends Model {
         relation: Model.HasOneThroughRelation,
         modelClass: Contribution,
         join: {
-          from: 'contribution.id',
+          from: 'tag.id',
           through: {
-            from: 'contribution_tags.contribution_id',
-            to: 'contribution_tags.tag_id',
+            from: 'contribution_tags.tag_id',
+            to: 'contribution_tags.contribution_id',
           },
-          to: 'tag.id',
+          to: 'contribution_tags.id',
         },
       },
     }
