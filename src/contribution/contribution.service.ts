@@ -41,7 +41,7 @@ export class ContributionService {
       await fs.move(src, dest)
       const images = await Image.query().joinRelated('draft').where('draft.id', draftId)
       await contribution.$relatedQuery('images').relate(images)
-      await this.deleteDraft(draftId, userId, true)
+      await this.deleteDraft(draftId, userId, true, true)
 
       console.log('success moved file!')
     } catch (err) {
@@ -55,10 +55,17 @@ export class ContributionService {
     return await Draft.query().insert({ author_id: userId })
   }
 
-  async deleteDraft(draftId: string, userId: number, dbOnly = false) {
+  async deleteDraft(draftId: string, userId: number, dbOnly = false, draftOnly = false) {
     const draft = await this.findDraft(draftId, userId)
     if (!draft) throw new Error('Draft does not exist')
     if (!dbOnly) await fs.remove(`./uploads/temp/${draftId}`)
+    if (!draftOnly)
+      await Image.query()
+        .delete()
+        .whereIn(
+          'id',
+          Image.query().select('image.id').joinRelated('draft').where('draft.id', draftId)
+        )
     const affected = await Draft.query().deleteById(draftId)
     return affected > 0
   }
