@@ -1,4 +1,5 @@
 import { Model, RelationMappings } from 'objection'
+import { Tag } from './tag.entity'
 
 export class Contribution extends Model {
   static get tableName() {
@@ -7,15 +8,15 @@ export class Contribution extends Model {
   id: number
   description: string
   title: string
-  added_time: string
-  author: number
+  author_id: number
   original: boolean
+  tag: Tag
 
   static get relationMappings(): RelationMappings {
     return {
-      contribution: {
+      tag: {
         relation: Model.HasOneThroughRelation,
-        modelClass: Contribution,
+        modelClass: Tag,
         join: {
           from: 'contribution.id',
           through: {

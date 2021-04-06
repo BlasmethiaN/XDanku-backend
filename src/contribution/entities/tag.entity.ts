@@ -22,7 +22,7 @@ export class Tag extends Model {
             from: 'contribution_tags.tag_id',
             to: 'contribution_tags.contribution_id',
           },
-          to: 'contribution_tags.id',
+          to: 'contribution.id',
         },
       },
     }

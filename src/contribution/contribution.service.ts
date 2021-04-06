@@ -5,11 +5,32 @@ import { Injectable } from '@nestjs/common'
 import { UpdateContributionDto } from './dto/update-contribution.dto'
 import { User } from 'src/user/entities/user.entity'
 import fs from 'fs-extra'
+import { Contribution } from './entities/contribution.entity'
+import _ from 'lodash'
+import { Tag } from './entities/tag.entity'
 
 @Injectable()
 export class ContributionService {
-  create(createContributionDto: CreateContributionDto) {
-    return 'This action adds a new contribution'
+  async createContribution(createContributionDto: CreateContributionDto, userId: number) {
+    const { title, description, tags, original } = createContributionDto
+    const contribution = await Contribution.query().insert({
+      description,
+      title,
+      author_id: userId,
+      original,
+    })
+    _.forEach(tags, async (tag) => {
+      const trimTag = _.trim(_.lowerCase(tag))
+      const exisTag = await this.findTagByName(trimTag)
+
+      if (exisTag.length === 0) {
+        await contribution.$relatedQuery('tag').insert({ tag_name: trimTag })
+      } else {
+        await Tag.relatedQuery('contribution').for(exisTag[0].id).relate(contribution.id)
+      }
+    })
+
+    return contribution.id
   }
 
   async createDraft(userId: number) {
@@ -38,8 +59,28 @@ export class ContributionService {
     return image.id
   }
 
+  async deleteImage(draftId: string, imageId: string, userId: number) {
+    const draft = await this.findDraft(draftId, userId)
+    if (!draft) throw new Error('Draft does not exist')
+    const affected = await Image.query()
+      .delete()
+      .whereIn(
+        'id',
+        Image.query()
+          .select('image.id')
+          .joinRelated('draft')
+          .where('draft.id', draftId)
+          .where('image.id', imageId)
+      )
+    return affected > 0
+  }
+
   findDraft(draftId: string, userId: number) {
     return Draft.query().findById(draftId).where('author_id', userId)
+  }
+
+  findTagByName(tagName: string) {
+    return Tag.query().select('id').where('tag_name', tagName)
   }
 
   findAll() {

@@ -36,9 +36,18 @@ export class ContributionController {
     return this.contributionService.deleteDraft(id, req.userId)
   }
 
+  @Delete('image/:draftId/:imageId')
+  deleteImage(
+    @Param('draftId') draftId: string,
+    @Param('imageId') imageId: string,
+    @Req() req: Request
+  ) {
+    return this.contributionService.deleteImage(draftId, imageId, req.userId)
+  }
+
   @Post('create-contribution')
-  create(@Body() createContributionDto: CreateContributionDto) {
-    return this.contributionService.create(createContributionDto)
+  create(@Body() createContributionDto: CreateContributionDto, @Req() req: Request) {
+    return this.contributionService.createContribution(createContributionDto, req.userId)
   }
 
   @Get()

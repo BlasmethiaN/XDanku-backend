@@ -4,9 +4,6 @@ export class CreateContributionDto {
   @IsNotEmpty()
   title: string
   description: string
-  @IsNotEmpty()
-  added_time: string
-  @IsNotEmpty()
-  author: number
+  tags: string[]
   original: boolean = false
 }
