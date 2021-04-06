@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
   await knex.schema.createTable('image', function (table) {
     uuid(table, knex)
     table.string('ext').notNullable()
+    table.increments('index').notNullable().unique()
   })
 
   return knex.schema.createTable('contribution_images', function (table) {

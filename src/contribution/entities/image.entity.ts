@@ -34,9 +34,9 @@ export class Image extends Model {
           from: 'image.id',
           through: {
             from: 'contribution_images.image_id',
-            to: 'contribution_images.draft_id',
+            to: 'contribution_images.contribution_id',
           },
-          to: 'contribution_images.id',
+          to: 'contribution.id',
         },
       },
     }

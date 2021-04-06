@@ -11,7 +11,11 @@ import { Tag } from './entities/tag.entity'
 
 @Injectable()
 export class ContributionService {
-  async createContribution(createContributionDto: CreateContributionDto, userId: number) {
+  async createContribution(
+    createContributionDto: CreateContributionDto,
+    userId: number,
+    draftId: string
+  ) {
     const { title, description, tags, original } = createContributionDto
     const contribution = await Contribution.query().insert({
       description,
@@ -24,11 +28,25 @@ export class ContributionService {
       const exisTag = await this.findTagByName(trimTag)
 
       if (exisTag.length === 0) {
-        await contribution.$relatedQuery('tag').insert({ tag_name: trimTag })
+        await contribution.$relatedQuery('tags').insert({ tag_name: trimTag })
       } else {
         await Tag.relatedQuery('contribution').for(exisTag[0].id).relate(contribution.id)
       }
     })
+
+    const src: string = `./uploads/temp/${draftId}`
+    const dest: string = `./uploads/contribution/${contribution.id}`
+
+    try {
+      await fs.move(src, dest)
+      const images = await Image.query().joinRelated('draft').where('draft.id', draftId)
+      await contribution.$relatedQuery('images').relate(images)
+      await this.deleteDraft(draftId, userId, true)
+
+      console.log('success moved file!')
+    } catch (err) {
+      console.error(err)
+    }
 
     return contribution.id
   }
@@ -37,16 +55,10 @@ export class ContributionService {
     return await Draft.query().insert({ author_id: userId })
   }
 
-  async deleteDraft(draftId: string, userId: number) {
-    const draft = await this.findDraft(draftId, userId).withGraphFetched('images')
+  async deleteDraft(draftId: string, userId: number, dbOnly = false) {
+    const draft = await this.findDraft(draftId, userId)
     if (!draft) throw new Error('Draft does not exist')
-    await fs.remove(`./uploads/temp/${draftId}`)
-    await Image.query()
-      .delete()
-      .whereIn(
-        'id',
-        Image.query().select('image.id').joinRelated('draft').where('draft.id', draftId)
-      )
+    if (!dbOnly) await fs.remove(`./uploads/temp/${draftId}`)
     const affected = await Draft.query().deleteById(draftId)
     return affected > 0
   }

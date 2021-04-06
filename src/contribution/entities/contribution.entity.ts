@@ -1,5 +1,6 @@
 import { Model, RelationMappings } from 'objection'
 import { Tag } from './tag.entity'
+import { Image } from './image.entity'
 
 export class Contribution extends Model {
   static get tableName() {
@@ -10,12 +11,13 @@ export class Contribution extends Model {
   title: string
   author_id: number
   original: boolean
-  tag: Tag
+  tags: Tag[]
+  images: Image[]
 
   static get relationMappings(): RelationMappings {
     return {
-      tag: {
-        relation: Model.HasOneThroughRelation,
+      tags: {
+        relation: Model.ManyToManyRelation,
         modelClass: Tag,
         join: {
           from: 'contribution.id',
@@ -24,6 +26,18 @@ export class Contribution extends Model {
             to: 'contribution_tags.tag_id',
           },
           to: 'tag.id',
+        },
+      },
+      images: {
+        relation: Model.ManyToManyRelation,
+        modelClass: Image,
+        join: {
+          from: 'contribution.id',
+          through: {
+            from: 'contribution_images.contribution_id',
+            to: 'contribution_images.image_id',
+          },
+          to: 'image.id',
         },
       },
     }

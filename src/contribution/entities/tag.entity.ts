@@ -14,7 +14,7 @@ export class Tag extends Model {
   static get relationMappings(): RelationMappings {
     return {
       contribution: {
-        relation: Model.HasOneThroughRelation,
+        relation: Model.ManyToManyRelation,
         modelClass: Contribution,
         join: {
           from: 'tag.id',
