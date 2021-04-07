@@ -51,6 +51,22 @@ export class ContributionService {
     return contribution.id
   }
 
+  async deleteContribution(contributionId: number, userId: number) {
+    const contribution = await this.findContribution(contributionId, userId)
+    if (!contribution) throw new Error('Contribution does not exist')
+    await fs.remove(`./uploads/contribution/${contributionId}`)
+    await Image.query()
+      .delete()
+      .whereIn(
+        'id',
+        Image.query()
+          .select('image.id')
+          .joinRelated('contribution')
+          .where('contribution.id', contributionId)
+      )
+    return await contribution.$query().delete()
+  }
+
   async createDraft(userId: number) {
     return await Draft.query().insert({ author_id: userId })
   }
@@ -96,6 +112,10 @@ export class ContributionService {
 
   findDraft(draftId: string, userId: number) {
     return Draft.query().findById(draftId).where('author_id', userId)
+  }
+
+  findContribution(contributionId: number, userId: number) {
+    return Contribution.query().findById(contributionId).where('author_id', userId)
   }
 
   findTagByName(tagName: string) {
