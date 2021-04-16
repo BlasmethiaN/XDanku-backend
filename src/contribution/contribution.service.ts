@@ -8,6 +8,7 @@ import fs from 'fs-extra'
 import { Contribution } from './entities/contribution.entity'
 import _ from 'lodash'
 import { Tag } from './entities/tag.entity'
+import { CreateResponse } from 'src/common/types/response.dto'
 
 @Injectable()
 export class ContributionService {
@@ -26,7 +27,6 @@ export class ContributionService {
     _.forEach(tags, async (tag) => {
       const trimTag = _.trim(_.lowerCase(tag))
       const exisTag = await this.findTagByName(trimTag)
-
       if (exisTag.length === 0) {
         await contribution.$relatedQuery('tags').insert({ tag_name: trimTag })
       } else {
@@ -48,7 +48,7 @@ export class ContributionService {
       console.error(err)
     }
 
-    return contribution.id
+    return CreateResponse.data({ contributionId: contribution.id })
   }
 
   async deleteContribution(contributionId: number, userId: number) {

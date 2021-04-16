@@ -6,6 +6,7 @@ import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer
 import _ from 'lodash'
 import { diskStorage } from 'multer'
 import fs from 'fs-extra'
+import { UploadImageResponse } from './dto/upload-image-response.dto'
 
 const multerConfig = async (contributionService: ContributionService): Promise<MulterOptions> => ({
   storage: diskStorage({
@@ -20,7 +21,7 @@ const multerConfig = async (contributionService: ContributionService): Promise<M
   }),
   fileFilter: (req, file, callback) => {
     if (!/\.(jpg|jpeg|png|gif)$/.test(file.originalname)) {
-      return callback(new Error('Only image files are allowed!'), false)
+      return callback(new Error(UploadImageResponse.NOT_IMAGE), false)
     }
     callback(null, true)
   },
