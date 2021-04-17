@@ -1,4 +1,5 @@
 import { CreateContributionDto } from './dto/create-contribution.dto'
+import { ContributionError } from './dto/create-contribution-response.dto'
 import { Draft } from './entities/draft.entity'
 import { Image } from './entities/image.entity'
 import { Injectable } from '@nestjs/common'
@@ -37,6 +38,11 @@ export class ContributionService {
     const src: string = `./uploads/temp/${draftId}`
     const dest: string = `./uploads/contribution/${contribution.id}`
 
+    const exists = fs.existsSync(src)
+    if (!exists) {
+      return CreateResponse.error(ContributionError.NO_IMAGE)
+    }
+
     try {
       await fs.move(src, dest)
       const images = await Image.query().joinRelated('draft').where('draft.id', draftId)
@@ -47,7 +53,6 @@ export class ContributionService {
     } catch (err) {
       console.error(err)
     }
-
     return CreateResponse.data({ contributionId: contribution.id })
   }
 
