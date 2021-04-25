@@ -19,6 +19,20 @@ export class ContributionService {
     draftId: string
   ) {
     const { title, description, tags, original } = createContributionDto
+    const src: string = `./uploads/temp/${draftId}`
+    const exists = fs.existsSync(src)
+    if (!exists) {
+      return CreateResponse.error(ContributionError.NO_IMAGE)
+    }
+    fs.readdir(src, function (err, files) {
+      if (err) {
+        console.log(err)
+      } else {
+        if (!files.length) {
+          return CreateResponse.error(ContributionError.NO_IMAGE)
+        }
+      }
+    })
     const contribution = await Contribution.query().insert({
       description,
       title,
@@ -34,14 +48,7 @@ export class ContributionService {
         await Tag.relatedQuery('contribution').for(exisTag[0].id).relate(contribution.id)
       }
     })
-
-    const src: string = `./uploads/temp/${draftId}`
     const dest: string = `./uploads/contribution/${contribution.id}`
-
-    const exists = fs.existsSync(src)
-    if (!exists) {
-      return CreateResponse.error(ContributionError.NO_IMAGE)
-    }
 
     try {
       await fs.move(src, dest)
