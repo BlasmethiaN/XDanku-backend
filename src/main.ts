@@ -19,7 +19,7 @@ async function bootstrap() {
 
   app.enableCors({
     credentials: true,
-    origin: ['http://localhost:3000', 'https://xdanku.vercel.app'],
+    origin: ['http://localhost:3000', 'https://xdanku.vercel.app', 'http://localhost:8080'],
   })
 
   app.use(helmet())

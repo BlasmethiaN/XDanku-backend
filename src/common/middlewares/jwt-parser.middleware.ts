@@ -13,7 +13,6 @@ export class JwtParserMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: () => void) {
     const cookie = req.cookies.token as string
-
     if (cookie) {
       const token = cookie.split(' ')[1] // ["Bearer", "aiwjdwaoiwjjadwwiojdodjojadwojido"]
       const userId = this.authService.decodeToken(token)

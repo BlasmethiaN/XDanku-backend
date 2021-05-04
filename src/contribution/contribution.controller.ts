@@ -28,7 +28,7 @@ export class ContributionController {
 
   @Get('new-draft')
   async createDraft(@Req() req: Request) {
-    return (await this.contributionService.createDraft(req.userId)).id
+    return await this.contributionService.createDraft(req.userId)
   }
 
   @Delete('delete/:id')

@@ -80,7 +80,8 @@ export class ContributionService {
   }
 
   async createDraft(userId: number) {
-    return await Draft.query().insert({ author_id: userId })
+    const draftId = await Draft.query().insert({ author_id: userId })
+    return CreateResponse.data(draftId)
   }
 
   async deleteDraft(draftId: string, userId: number, dbOnly = false, draftOnly = false) {
