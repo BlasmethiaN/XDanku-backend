@@ -10,6 +10,8 @@ import { Contribution } from './entities/contribution.entity'
 import _ from 'lodash'
 import { Tag } from './entities/tag.entity'
 import { CreateResponse } from 'src/common/types/response.dto'
+import { raw } from 'objection'
+import { knex } from 'db/knex'
 
 @Injectable()
 export class ContributionService {
@@ -125,6 +127,19 @@ export class ContributionService {
 
   findDraft(draftId: string, userId: number) {
     return Draft.query().findById(draftId).where('author_id', userId)
+  }
+
+  static deleteInactiveDrafts() {
+    return Draft.query()
+      .delete()
+      .where(raw('extract (epoch from (timestamp now() - timestamp last_active))::integer/60 > 10'))
+  }
+
+  updateDraftActivity(draftId, userId) {
+    return Draft.query()
+      .update({ last_active: knex.fn.now() })
+      .findById(draftId)
+      .where('author_id', userId)
   }
 
   findContribution(contributionId: number, userId: number) {

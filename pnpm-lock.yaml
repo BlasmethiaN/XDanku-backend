@@ -5,6 +5,7 @@ dependencies:
   '@nestjs/jwt': 7.2.0_@nestjs+common@7.6.14
   '@nestjs/mapped-types': 0.4.0_b0da10a434270b058846770c36407d79
   '@nestjs/platform-express': 7.6.14_eb2137b89ad1a94bbdbfd4e770f337ed
+  '@nestjs/schedule': 0.4.3_966ed74870af11f5cedae56d1914c51e
   '@types/uuid': 8.3.0
   bcrypt: 5.0.1
   class-transformer: 0.4.0
@@ -25,6 +26,7 @@ devDependencies:
   '@nestjs/testing': 7.6.14_8297f2fc97d68beb9ead68b9fd5284dd
   '@types/bcrypt': 3.0.0
   '@types/cookie-parser': 1.4.2
+  '@types/cron': 1.7.2
   '@types/express': 4.17.11
   '@types/fs-extra': 9.0.11
   '@types/jest': 26.0.21
@@ -811,6 +813,18 @@ packages:
       '@nestjs/core': ^7.0.0
     resolution:
       integrity: sha512-0e+byDx6Ak3avSkhMlZfs65vqzjqn/kdpR6EdtifIpIsJWYo0ZapbCNBqyQ2RLFq/IBjP6Y9nWO6HNSOOM60Kw==
+  /@nestjs/schedule/0.4.3_966ed74870af11f5cedae56d1914c51e:
+    dependencies:
+      '@nestjs/common': 7.6.14_72c71fae9438f0c01bf19f98b0b41cfb
+      cron: 1.7.2
+      reflect-metadata: 0.1.13
+      uuid: 8.3.2
+    dev: false
+    peerDependencies:
+      '@nestjs/common': ^6.10.11 || ^7.0.0
+      reflect-metadata: ^0.1.12
+    resolution:
+      integrity: sha512-EowkpwD09lrdMFzjt/kNQgaq6MG0GrNadNoOEebbfyA0qBU0UTg7J+FVullTR9+5HtaegqqAuWDvZlVoGHYz+Q==
   /@nestjs/schematics/7.3.0_typescript@4.1.5:
     dependencies:
       '@angular-devkit/core': 11.2.3
@@ -982,6 +996,13 @@ packages:
     dev: true
     resolution:
       integrity: sha512-t73xJJrvdTjXrn4jLS9VSGRbz0nUY3cl2DMGDU48lKl+HR9dbbjW2A9r3g40VA++mQpy6uuHg33gy7du2BKpog==
+  /@types/cron/1.7.2:
+    dependencies:
+      '@types/node': 14.14.44
+      moment: 2.29.1
+    dev: true
+    resolution:
+      integrity: sha512-AEpNLRcsVSc5AdseJKNHpz0d4e8+ow+abTaC0fKDbAU86rF1evoFF0oC2fV9FdqtfVXkG2LKshpLTJCFOpyvTg==
   /@types/eslint-scope/3.7.0:
     dependencies:
       '@types/eslint': 7.2.7
@@ -1087,6 +1108,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-dueRKfaJL4RTtSa7bWeTK1M+VH+Gns73oCgzvYfHZywRCoPSd8EkXBL0mZ9unPTveBn+D9phZBaxuzpwjWkW0g==
+  /@types/node/14.14.44:
+    dev: true
+    resolution:
+      integrity: sha512-+gaugz6Oce6ZInfI/tK4Pq5wIIkJMEJUu92RB3Eu93mtj4wjjjz9EB5mLp5s1pSsLXdC/CPut/xF20ZzAQJbTA==
   /@types/normalize-package-data/2.4.0:
     dev: true
     resolution:
@@ -2333,6 +2358,12 @@ packages:
     dev: true
     resolution:
       integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
+  /cron/1.7.2:
+    dependencies:
+      moment-timezone: 0.5.33
+    dev: false
+    resolution:
+      integrity: sha512-+SaJ2OfeRvfQqwXQ2kgr0Y5pzBR/lijf5OpnnaruwWnmI799JfWr2jN2ItOV9s3A/+TFOt6mxvKzQq5F0Jp6VQ==
   /cross-spawn/6.0.5:
     dependencies:
       nice-try: 1.0.5
@@ -5020,6 +5051,15 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
+  /moment-timezone/0.5.33:
+    dependencies:
+      moment: 2.29.1
+    dev: false
+    resolution:
+      integrity: sha512-PTc2vcT8K9J5/9rDEPe5czSIKgLoGsH8UNpA4qZTVw0Vd/Uz19geE9abbIOQKaAQFcnQ3v5YEXrbSc5BpshH+w==
+  /moment/2.29.1:
+    resolution:
+      integrity: sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
   /ms/2.0.0:
     resolution:
       integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
@@ -7346,10 +7386,12 @@ specifiers:
   '@nestjs/jwt': ^7.2.0
   '@nestjs/mapped-types': '*'
   '@nestjs/platform-express': ^7.6.13
+  '@nestjs/schedule': ^0.4.3
   '@nestjs/schematics': ^7.2.7
   '@nestjs/testing': ^7.6.13
   '@types/bcrypt': ^3.0.0
   '@types/cookie-parser': ^1.4.2
+  '@types/cron': ^1.7.2
   '@types/express': ^4.17.11
   '@types/fs-extra': ^9.0.11
   '@types/jest': ^26.0.20

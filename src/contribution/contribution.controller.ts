@@ -31,6 +31,11 @@ export class ContributionController {
     return await this.contributionService.createDraft(req.userId)
   }
 
+  @Get('draftActivity/:id')
+  async updateDraftActivity(@Param('id') id: number, @Req() req: Request) {
+    return await this.contributionService.updateDraftActivity(id, req.userId)
+  }
+
   @Delete('delete/:id')
   deleteContribution(@Param('id') id: number, @Req() req: Request) {
     return this.contributionService.deleteContribution(id, req.userId)

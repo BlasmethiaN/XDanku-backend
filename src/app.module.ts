@@ -9,6 +9,7 @@ import { JwtParserMiddleware } from './common/middlewares/jwt-parser.middleware'
 import { UserModule } from './user/user.module'
 import { AuthMiddleware } from './common/middlewares/auth.middleware'
 import { ContributionController } from './contribution/contribution.controller'
+import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ContributionController } from './contribution/contribution.controller'
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

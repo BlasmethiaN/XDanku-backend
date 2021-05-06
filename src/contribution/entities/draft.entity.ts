@@ -9,6 +9,7 @@ export class Draft extends Model {
 
   id: string
   author_id: number
+  last_active: Date
   images: Image[]
 
   static get relationMappings(): RelationMappings {
