@@ -31,7 +31,7 @@ export class ContributionController {
     return await this.contributionService.createDraft(req.userId)
   }
 
-  @Get('draftActivity/:id')
+  @Get('draft-activity/:id')
   async updateDraftActivity(@Param('id') id: number, @Req() req: Request) {
     return await this.contributionService.updateDraftActivity(id, req.userId)
   }

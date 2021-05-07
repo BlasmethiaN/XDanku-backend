@@ -10,8 +10,8 @@ import { Contribution } from './entities/contribution.entity'
 import _ from 'lodash'
 import { Tag } from './entities/tag.entity'
 import { CreateResponse } from 'src/common/types/response.dto'
-import { raw } from 'objection'
 import { knex } from 'db/knex'
+import dayjs from 'dayjs'
 
 @Injectable()
 export class ContributionService {
@@ -130,9 +130,11 @@ export class ContributionService {
   }
 
   static deleteInactiveDrafts() {
+    console.log()
     return Draft.query()
       .delete()
-      .where(raw('extract (epoch from (timestamp now() - timestamp last_active))::integer/60 > 10'))
+      .where('last_active', '<', dayjs().subtract(10, 'minutes').toDate())
+      .debug()
   }
 
   updateDraftActivity(draftId, userId) {

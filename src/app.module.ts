@@ -10,19 +10,20 @@ import { UserModule } from './user/user.module'
 import { AuthMiddleware } from './common/middlewares/auth.middleware'
 import { ContributionController } from './contribution/contribution.controller'
 import { ScheduleModule } from '@nestjs/schedule'
+import { CronService } from './cron/cron.service'
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     AuthModule,
     ContributionModule,
     UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, CronService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
