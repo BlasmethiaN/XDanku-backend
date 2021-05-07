@@ -129,8 +129,15 @@ export class ContributionService {
     return Draft.query().findById(draftId).where('author_id', userId)
   }
 
-  static deleteInactiveDrafts() {
-    console.log()
+  async deleteInactiveDrafts() {
+    const result = await Draft.query()
+      .select()
+      .where('last_active', '<', dayjs().subtract(10, 'minutes').toDate())
+      .debug()
+    _.forEach(result, async (draft: Draft) => {
+      await fs.remove(`./uploads/temp/${draft.id}`)
+    })
+
     return Draft.query()
       .delete()
       .where('last_active', '<', dayjs().subtract(10, 'minutes').toDate())
